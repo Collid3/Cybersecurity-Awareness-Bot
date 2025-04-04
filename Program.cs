@@ -31,4 +31,35 @@ for (int i = 0; i < 3; i++)
     }
 }
 
+Console.ResetColor();
+Console.ForegroundColor = ConsoleColor.Blue;
+Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+Console.ResetColor();
+
+// Border
+Console.WriteLine("---------------------------------------------------------------------------------------------------------------------");
+
+Console.Write("Username: ");
+String username = Console.ReadLine();
+
+if (username == "")
+{
+    do
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Invalid username input, Please rephrase");
+        Console.ResetColor();
+        Console.Write("Username: ");
+        username = Console.ReadLine();
+    } while (username == "");
+}
+
+// Border
+Console.WriteLine("---------------------------------------------------------------------------------------------------------------------");
+
+// Welcome message
+Console.ForegroundColor = ConsoleColor.Yellow;
+Console.WriteLine(String.Format($"\nGreetings {username.ToUpper()}, What topic would you like to know about"));
+Console.WriteLine("Topics includes phishing, safe passwords, and last but not least, safe browsing techniques");
+Console.ResetColor();
 
