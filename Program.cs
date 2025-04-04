@@ -80,4 +80,37 @@ if (response == "")
     while (response == "");
 }
 
+String[] topics = { "phishing", "password", "browsing", "how are you", "your purpose", "ask you about", "help" };
+String[] answers = { "Phishing uses scam emails to convince users to click on a malicious attachment or link to steal information or install viruses on your device", "Users are adviced to create strong password that are atleast 8 characters long and includes special characters and numbers, as attackers can crack weak or easily guessable passwords", "To browse safely on the internet, make sure you are using a secure internet connection, enable multi-factor authentication, ensure that the software you are using and the operating system are updated, check for the reliability of the website, and last but not least, understand the privacy policy and review your privacy settings", "I am supercalifragilisticexpialidocious thanks :)", "The main purpose of this software is to help you understand the importance of cyber security and how to keep safe in the digital world!", "You can ask about Cybersecurity related topics including password safety, phishing, safe browsing, and more. Try asking about phishing to get knowledge" };
+String output = "";
 
+do
+{
+    for (int i = 0; i < topics.Length; i++)
+    {
+        if (response.ToLower().Contains(topics[i]))
+        {
+            output = answers[i];
+        }
+    }
+
+    if (output == "")
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Sorry I didn't understand that, please rephrase");
+        Console.ResetColor();
+        Console.Write("> ");
+        response = Console.ReadLine();
+    }
+    else
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine(output);
+        Console.ResetColor();
+        output = "";
+        Console.WriteLine("\nWhat topic do you want to know about?");
+        Console.Write("> ");
+        response = Console.ReadLine();
+    }
+
+} while (true);
