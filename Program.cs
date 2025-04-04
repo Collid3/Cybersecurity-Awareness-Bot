@@ -63,3 +63,21 @@ Console.WriteLine(String.Format($"\nGreetings {username.ToUpper()}, What topic w
 Console.WriteLine("Topics includes phishing, safe passwords, and last but not least, safe browsing techniques");
 Console.ResetColor();
 
+// user query
+Console.Write("> ");
+String response = Console.ReadLine();
+
+if (response == "")
+{
+    do
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Invalid input, please rephrase");
+        Console.ResetColor();
+        Console.Write("> ");
+        response = Console.ReadLine();
+    }
+    while (response == "");
+}
+
+
