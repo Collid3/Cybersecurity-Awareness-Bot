@@ -1,4 +1,5 @@
-﻿using System.Media;
+﻿using ST10442407_POE_PART_1;
+using System.Media;
 
 
 // Welcome tome
@@ -119,27 +120,46 @@ int answer = -1;
 string[] mood = { "worried", "curious", "frustrated" };
 
 // interest
-//string interest = "";
+string interest = "";
 
 do
 {
-
+    string moodResponse = "";
 
     for (int i = 0; i < topics.Length; i++)
-    {
 
+    {
+        if (i <= 2 && response.ToLower().Contains(mood[i]))
+        {
+            moodResponse = "I understand why you feel that way. It could be difficult in the digital world. But let me share some tips with you to stay safe. \n";
+        }
 
         if (response.ToLower().Contains("more details"))
         {
             output = followUpResponses[answer][0];
             answer = -1;
+            break;
+        }
+
+        else if (response.ToLower().Contains("interested"))
+        {
+            interest = response.Substring(response.IndexOf("interested") + "interested".Length);
+            output = "Great!. I will remember that you are interested in " + interest;
+            answer = -1;
+            break;
         }
 
         else if (response.ToLower().Contains(topics[i]))
         {
             Random rand = new Random();
-            output = answers[i][rand.Next(answers[i].Length)];
+            output = moodResponse + answers[i][rand.Next(answers[i].Length)];
             answer = i;
+            break;
+        }
+
+        else if (!moodResponse.Equals(""))
+        {
+            output = moodResponse;
         }
     }
 
@@ -156,11 +176,14 @@ do
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine(output);
 
+        // check if there is interest and randomly display it
+        new DisplayInterestMessage(interest);
+
         Console.ResetColor();
         output = "";
         Console.ForegroundColor = ConsoleColor.Yellow;
 
-        if (!answer.Equals(-1) && answer <= 3 ) {
+        if (!answer.Equals(-1) && answer <= 3 && moodResponse.Equals("")) {
             Console.WriteLine("\nEnter \"more details\" for more details or a topic you would like to know about");
         } else
         {
