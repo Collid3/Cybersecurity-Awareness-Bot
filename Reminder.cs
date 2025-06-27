@@ -13,8 +13,9 @@ namespace ST10442407_POE_PART_1
         public static List<string> TaskDescriptions = new List<string>();
         public static List<int> Dates = new List<int>();
 
-        public void addTask()
+        public string addTask()
         {
+            string taskOrReminder = "Task";
             string title = "", description = "";
 
             Console.WriteLine("------------------------------------------------------------------------------");
@@ -38,6 +39,7 @@ namespace ST10442407_POE_PART_1
                     {
                         Console.WriteLine("Date found: " + Date[i]);
                         Dates.Add(Int32.Parse(Date[i].ToString()));
+                        taskOrReminder = "Reminder";
                     }
                 }
             } else { Dates.Add(0);  }
@@ -46,35 +48,43 @@ namespace ST10442407_POE_PART_1
                 {
                     TaskTitles.Add(title);
                     TaskDescriptions.Add(description);
-
-                    Console.WriteLine("Task successfully added\n");
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Something went wrong\n");
-                }
+                };
+
+            if (taskOrReminder.Equals("Task"))
+            {
+                return "Added task: \"" + title + "\" (no reminder set)";
+            } else
+            {
+                return "Set reminder for '" + title + "'";
+            }
         }
 
-        public void deleteTask(int index) 
+        public string deleteTask(int index) 
         {
+            string description = "";
             for (int i = TaskTitles.Count - 1; i >= 0; i--)
             {
                 if ((i + 1) == index)
                 {
+                    description = TaskDescriptions[index - 1];
                     TaskTitles.RemoveAt(index -1 );
                     TaskDescriptions.RemoveAt(index -1);
                     Dates.Remove(index -1);
                 }
             }
 
-            Console.WriteLine("Task successfully deleted\n");
+            return description;
         }
 
         public void viewTasks()
         {
             if (TaskTitles.Count.Equals(0))
             {
-                Console.WriteLine("List is currently empty\n");
+                Console.WriteLine("Tasks List is currently empty\n");
             }
             else
             {
@@ -92,8 +102,6 @@ namespace ST10442407_POE_PART_1
                     {
                         Console.WriteLine();
                     }
-
-                    Console.WriteLine();
 
                 }
             }

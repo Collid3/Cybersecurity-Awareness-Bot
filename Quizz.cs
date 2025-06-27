@@ -24,9 +24,11 @@ namespace ST10442407_POE_PART_1
         string[] responses = { "Cybersecurity helps in protecting systems, networks, programs, and data from cyberattacks and unauthorized access.", "Viruses and worms are malicious softwares used to harm computer systems.", "In a phishing attack actors trick individuals into revealing sensitive information by appearing to be a legitimate source.", "It is a good practice to use unique passwords in case your password is compromised, to prevent an attacker to access all accounts.", "A firewall is a device that acts as a barrier between trusted internal network and untrusted external network to prevent unauthorized access, cyberattacks, and data breaches.", "Reporting phishing emails helps in preventing scams." };
         int score = 0;
 
-        public void playQuizz()
+        public int playQuizz()
         {
-            Console.WriteLine("Cyber security Quizz. Select a number 1-4 to answer the questions\n");
+            Console.WriteLine("-----------------------------------------------------------------------------------");
+            Console.WriteLine("Cyber security Quizz. Select a number 1-4 to answer the questions");
+            Console.WriteLine("-----------------------------------------------------------------------------------\n");
 
             for (int i = 0; i < quizzQuestions.Length; i++)
             {
@@ -74,27 +76,26 @@ namespace ST10442407_POE_PART_1
                 } while (!answered);
             }
 
-            generateScore();
+            return score;
         }
 
-        private void generateScore()
+        public string generateScore(int scoreObtained)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Final score " + score + " / 6");
+            Console.WriteLine("Final score " + scoreObtained + " / 6");
             Console.ResetColor();
 
             Console.ForegroundColor = ConsoleColor.Magenta;
-            if (score < 4)
+            if (scoreObtained < 4)
             {
-                Console.WriteLine("Keep learning to stay safe online!\n");
-            } else if (score <= 5 )
+                return "Keep learning to stay safe online!";
+            } else if (scoreObtained <= 5 )
             {
-                Console.WriteLine("Great job! You are a cybersecurity pro!\n");
+                return "Great job! You are a cybersecurity pro!";
             } else
             {
-                Console.WriteLine("Excelent work! You are a cybersecurity expert!\n");
+                return "Excelent work! You are a cybersecurity expert!";
             }
-            Console.ResetColor();
         }
 
     }

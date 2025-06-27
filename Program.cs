@@ -69,7 +69,8 @@ Console.ResetColor();
 string response = "";
 void menu ()
 {
-    Console.Write("Ask me anything or select a number from the menu below\n1. Add a Task\n2. View Tasks\n3. Delete tasks\n5. Play a quizz\n> ");
+    response = "";
+    Console.Write("Ask me anything or select a number from the menu below\n1. Add a Task\n2. View Tasks\n3. Delete tasks\n4. Play a quizz\n> ");
     response = Console.ReadLine();
     Console.WriteLine();
 }
@@ -89,7 +90,8 @@ if (response == "")
     while (response == "");
 }
 
-string[] topics = { "phishing", "password", "browsing", "your purpose", "how are you", "ask you about", "help", "task", "reminder", "quiz" };
+List<string> activities = new List<string>();
+string[] topics = { "phishing", "password", "browsing", "your purpose", "how are you", "ask you about", "help" };
 
 string[] phishingResponses = { "Phishing uses scam emails to convince users to click on a malicious attachment or link to steal information or install viruses on your device", "Phishing attacks may claim there is a problem with your account and ask you to verify information, or offer \"special offer\" that requires you to click a link and enter sensitive information which may then be used against you. Beware." };
 string[] passwordResponses = { "You are adviced to create a strong password that is atleast 8 characters long and includes special characters and numbers, as attackers can crack weak or easily guessable passwords", "It is safe to regularly change your password every once in a while and enable a multi-factor authentification when available" };
@@ -134,63 +136,87 @@ do
 {
     string moodResponse = "";
 
+
     if (Regex.IsMatch(response, @"\d"))
     {
-        int selectedMenu = Convert.ToInt32(response);
-        var reminder = new Reminder();
-
-        switch (selectedMenu)
+        try
         {
-            case 1:
-                reminder.addTask();
-                menu();
-                break;
+            int selectedMenu = Convert.ToInt32(response);
+            var reminder = new Reminder();
 
-            case 2:
-                reminder.viewTasks();
-                menu();
-                break;
+            switch (selectedMenu)
+            {
+                case 1:
+                    string addTaskResponse = reminder.addTask();
+                    response = "";
+                    Console.WriteLine(addTaskResponse);
+                    activities.Add(addTaskResponse);
+                    output = "Task successfully added";
+                    break;
 
-            case 3:
-                reminder.viewTasks();
-                Console.Write("Select the number of the task you want to delete: ");
+                case 2:
+                    reminder.viewTasks();
+                    response = "";
+                    output = "Viewed tasks";
+                    break;
 
-                int GetNumberFromString(string index)
-                {
-                    Regex number = new Regex("[0-9][0-9]?");
-                    Match n = number.Match(index);
-                    if (n.Value != "")
-                        return System.Convert.ToInt32(n.Value, 10);
-                    else
-                        return -1;
-                }
+                case 3:
+                    reminder.viewTasks();
+                    response = "";
 
+                    Console.Write("Select the number of the task you want to delete: ");
 
-                while (true)
-                {
-                    string index = Console.ReadLine();
-                    int indexOfTask = GetNumberFromString(index);
-
-                    if (!indexOfTask.Equals(-1))
+                    int GetNumberFromString(string index)
                     {
-                        reminder.deleteTask(indexOfTask);
-                        break;
+                        Regex number = new Regex("[0-9][0-9]?");
+                        Match n = number.Match(index);
+                        if (n.Value != "")
+                            return System.Convert.ToInt32(n.Value, 10);
+                        else
+                            return -1;
                     }
-                    else
-                    {
-                        Console.WriteLine("Invalid number of the task to delete. Try again");
-                    }
-                }
-                menu();
-                break;
 
-            case 5:
-                var quizz = new Quizz();
-                quizz.playQuizz();
-                menu();
-                break;
+
+                    while (true)
+                    {
+                        string index = Console.ReadLine();
+                        int indexOfTask = GetNumberFromString(index);
+
+                        if (!indexOfTask.Equals(-1))
+                        {
+                            if (!activities.Contains("Deleted Task"))
+                            {
+                                activities.Add("Deleted Task");
+                            }
+                            string deleteResponse = reminder.deleteTask(indexOfTask);
+                            activities.Add("Deleted Task: " + deleteResponse);
+                            output = "Task successfully deleted";
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid number of the task to delete. Try again");
+                        }
+                    }
+                    break;
+
+                case 4:
+                    var quizz = new Quizz();
+                    response = "";
+                    int scoreObtained = quizz.playQuizz();
+                    activities.Add("Played quizz and obtained " + scoreObtained + " / 6");
+                    output = quizz.generateScore(scoreObtained);
+                    break;
+            }
+        } catch (Exception e)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Invalid input error. Try again");
+            Console.ResetColor();
+            menu();
         }
     }
+
     else
     {
         for (int i = 0; i < topics.Length; i++)
@@ -223,30 +249,62 @@ do
                 answer = i;
                 break;
             }
-
-            else if (response.ToLower().Contains("task") || response.ToLower().Contains("reminder"))
-            {
-                var reminder = new Reminder();
-                reminder.addTask();
-                menu();
-                break;
-            }
-            
-            else if (response.ToLower().Contains("quiz"))
-            {
-                var quiz = new Quizz();
-                quiz.playQuizz();
-                menu();
-                break;
-            }
-
-            else if (!moodResponse.Equals(""))
-            {
-                output = moodResponse;
-            }
         }
 
-        if (output == "")
+        if (response.ToLower().Contains("task") || response.ToLower().Contains("reminder"))
+        {
+            var reminder = new Reminder();
+            reminder.addTask();
+            output = "Task successfully added";
+            break;
+        }
+
+        else if (response.ToLower().Contains("quiz"))
+        {
+            var quiz = new Quizz();
+            int scoreObtained = quiz.playQuizz();
+            activities.Add("Played quizz and obtained " + scoreObtained + " / 6");
+            output = quiz.generateScore(scoreObtained);
+        }
+
+        else if (response.Contains("activity log", StringComparison.InvariantCultureIgnoreCase) || response.Contains("done for me", StringComparison.CurrentCultureIgnoreCase))
+        {
+            Console.WriteLine("-----------------------------------------------------------------------------------");
+            Console.WriteLine("Activity Log");
+            Console.WriteLine("-----------------------------------------------------------------------------------");
+            int index = 1;
+
+
+            if (activities.Count == 0)
+            {
+                Console.WriteLine("Activity list currently empty");
+            }
+            if (activities.Count > 5)
+            {
+                for (int i = activities.Count - 5; i < activities.Count; i++)
+                {
+                    Console.WriteLine(index + 1 + ". " + activities[i]);
+                    index++;
+                }
+            } else
+            {
+                for (int i = 0; i < activities.Count; i++)
+                {
+                    Console.WriteLine(index + ". " + activities[i]);
+                    index++;
+                }
+            }
+
+            output = "Log closed";
+            response = "";
+        }
+
+        if (!moodResponse.Equals(""))
+        {
+            output = moodResponse;
+        }
+
+        else if (output == "")
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("\nSorry I didn't understand that, please rephrase");
@@ -269,11 +327,9 @@ do
             {
                 Console.WriteLine("\nEnter \"more details\" for more details or a topic you would like to know about");
             }
-            else
-            {
-                Console.WriteLine("What do you want to know about?");
-            }
+            
             Console.ResetColor();
+            Console.WriteLine();
             menu();
         }
     }
