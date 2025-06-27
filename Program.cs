@@ -1,5 +1,7 @@
 ﻿using ST10442407_POE_PART_1;
 using System.Media;
+using System.Numerics;
+using System.Text.RegularExpressions;
 
 
 // Welcome tome
@@ -60,14 +62,20 @@ Console.WriteLine("-------------------------------------------------------------
 
 // Welcome message
 Console.ForegroundColor = ConsoleColor.Yellow;
-Console.WriteLine(String.Format($"\nGreetings {username.ToUpper()}, What topic would you like to know about"));
-Console.WriteLine("Topics includes phishing, safe passwords, and last but not least, safe browsing techniques");
+Console.WriteLine(String.Format($"\nGreetings to you, {username.ToUpper()}"));
 Console.ResetColor();
 
 // user query
-Console.Write("> ");
-string response = Console.ReadLine();
+string response = "";
+void menu ()
+{
+    Console.Write("Ask me anything or select a number from the menu below\n1. Add a Task\n2. View Tasks\n3. Delete tasks\n> ");
+    response = Console.ReadLine();
+    Console.WriteLine();
+}
+menu();
 
+// Invalid input handler
 if (response == "")
 {
     do
@@ -126,72 +134,125 @@ do
 {
     string moodResponse = "";
 
-    for (int i = 0; i < topics.Length; i++)
-
+    if (Regex.IsMatch(response, @"\d"))
     {
-        if (i <= 2 && response.ToLower().Contains(mood[i]))
-        {
-            moodResponse = "I understand why you feel that way. It could be difficult in the digital world. But let me share some tips with you to stay safe. \n";
-        }
+        int selectedMenu = Convert.ToInt32(response);
+        var reminder = new Reminder();
 
-        if (response.ToLower().Contains("more details"))
+        switch (selectedMenu)
         {
-            output = followUpResponses[answer][0];
-            answer = -1;
-            break;
-        }
+            case 1:
+                reminder.addTask();
+                menu();
+                break;
+            case 2:
+                reminder.viewTasks();
+                menu();
+                break;
+            case 3:
+                reminder.viewTasks();
+                Console.Write("Select the number of the task you want to delete: ");
 
-        else if (response.ToLower().Contains("interested"))
-        {
-            interest = response.Substring(response.IndexOf("interested") + "interested".Length);
-            output = "Great!. I will remember that you are interested in " + interest;
-            answer = -1;
-            break;
-        }
+                int GetNumberFromString(string index)
+                {
+                    Regex number = new Regex("[0-9][0-9]?");
+                    Match n = number.Match(index);
+                    if (n.Value != "")
+                        return System.Convert.ToInt32(n.Value, 10);
+                    else
+                        return -1;
+                }
 
-        else if (response.ToLower().Contains(topics[i]))
-        {
-            Random rand = new Random();
-            output = moodResponse + answers[i][rand.Next(answers[i].Length)];
-            answer = i;
-            break;
-        }
 
-        else if (!moodResponse.Equals(""))
-        {
-            output = moodResponse;
-        }
-    }
+                while (true)
+                {
+                    string index = Console.ReadLine();
+                    int indexOfTask = GetNumberFromString(index);
 
-    if (output == "")
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("\nSorry I didn't understand that, please rephrase");
-        Console.ResetColor();
-        Console.Write("> ");
-        response = Console.ReadLine();
+                    if (!indexOfTask.Equals(-1))
+                    {
+                        reminder.deleteTask(indexOfTask);
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid number of the task to delete. Try again");
+                    }
+                }
+                menu();
+                break;
+
+        }
     }
     else
     {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine(output);
+        for (int i = 0; i < topics.Length; i++)
 
-        // check if there is interest and randomly display it
-        new DisplayInterestMessage(interest);
-
-        Console.ResetColor();
-        output = "";
-        Console.ForegroundColor = ConsoleColor.Yellow;
-
-        if (!answer.Equals(-1) && answer <= 3 && moodResponse.Equals("")) {
-            Console.WriteLine("\nEnter \"more details\" for more details or a topic you would like to know about");
-        } else
         {
-            Console.WriteLine("What do you want to know about?");
+            if (i <= 2 && response.ToLower().Contains(mood[i]))
+            {
+                moodResponse = "I understand why you feel that way. It could be difficult in the digital world. But let me share some tips with you to stay safe. \n";
+            }
+
+            if (response.ToLower().Contains("more details"))
+            {
+                output = followUpResponses[answer][0];
+                answer = -1;
+                break;
+            }
+
+            else if (response.ToLower().Contains("interested"))
+            {
+                interest = response.Substring(response.IndexOf("interested") + "interested".Length);
+                output = "Great!. I will remember that you are interested in " + interest;
+                answer = -1;
+                break;
+            }
+
+            else if (response.ToLower().Contains(topics[i]))
+            {
+                Random rand = new Random();
+                output = moodResponse + answers[i][rand.Next(answers[i].Length)];
+                answer = i;
+                break;
+            }
+
+            else if (!moodResponse.Equals(""))
+            {
+                output = moodResponse;
+            }
         }
-        Console.ResetColor();
-        Console.Write("> ");
-        response = Console.ReadLine();
+
+        if (output == "")
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\nSorry I didn't understand that, please rephrase");
+            Console.ResetColor();
+            menu();
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(output);
+
+            // check if there is interest and randomly display it
+            new DisplayInterestMessage(interest);
+
+            Console.ResetColor();
+            output = "";
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
+            if (!answer.Equals(-1) && answer <= 3 && moodResponse.Equals(""))
+            {
+                Console.WriteLine("\nEnter \"more details\" for more details or a topic you would like to know about");
+            }
+            else
+            {
+                Console.WriteLine("What do you want to know about?");
+            }
+            Console.ResetColor();
+            menu();
+        }
     }
 
 } while (true);
