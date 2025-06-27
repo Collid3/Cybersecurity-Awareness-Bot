@@ -89,7 +89,7 @@ if (response == "")
     while (response == "");
 }
 
-string[] topics = { "phishing", "password", "browsing", "your purpose", "how are you", "ask you about", "help" };
+string[] topics = { "phishing", "password", "browsing", "your purpose", "how are you", "ask you about", "help", "task", "reminder", "quiz" };
 
 string[] phishingResponses = { "Phishing uses scam emails to convince users to click on a malicious attachment or link to steal information or install viruses on your device", "Phishing attacks may claim there is a problem with your account and ask you to verify information, or offer \"special offer\" that requires you to click a link and enter sensitive information which may then be used against you. Beware." };
 string[] passwordResponses = { "You are adviced to create a strong password that is atleast 8 characters long and includes special characters and numbers, as attackers can crack weak or easily guessable passwords", "It is safe to regularly change your password every once in a while and enable a multi-factor authentification when available" };
@@ -221,6 +221,22 @@ do
                 Random rand = new Random();
                 output = moodResponse + answers[i][rand.Next(answers[i].Length)];
                 answer = i;
+                break;
+            }
+
+            else if (response.ToLower().Contains("task") || response.ToLower().Contains("reminder"))
+            {
+                var reminder = new Reminder();
+                reminder.addTask();
+                menu();
+                break;
+            }
+            
+            else if (response.ToLower().Contains("quiz"))
+            {
+                var quiz = new Quizz();
+                quiz.playQuizz();
+                menu();
                 break;
             }
 
