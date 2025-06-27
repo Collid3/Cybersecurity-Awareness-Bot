@@ -86,7 +86,7 @@ namespace ST10442407_POE_PART_1
 
                     if (!Dates[i].Equals(0))
                     {
-                        Console.WriteLine("You will be reminded in " + Dates[i] + " days");
+                        Console.WriteLine("Got it! I'll reminded you in " + Dates[i] + " days.");
                     }
                     else
                     {

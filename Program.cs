@@ -69,7 +69,7 @@ Console.ResetColor();
 string response = "";
 void menu ()
 {
-    Console.Write("Ask me anything or select a number from the menu below\n1. Add a Task\n2. View Tasks\n3. Delete tasks\n> ");
+    Console.Write("Ask me anything or select a number from the menu below\n1. Add a Task\n2. View Tasks\n3. Delete tasks\n5. Play a quizz\n> ");
     response = Console.ReadLine();
     Console.WriteLine();
 }
@@ -145,10 +145,12 @@ do
                 reminder.addTask();
                 menu();
                 break;
+
             case 2:
                 reminder.viewTasks();
                 menu();
                 break;
+
             case 3:
                 reminder.viewTasks();
                 Console.Write("Select the number of the task you want to delete: ");
@@ -182,6 +184,11 @@ do
                 menu();
                 break;
 
+            case 5:
+                var quizz = new Quizz();
+                quizz.playQuizz();
+                menu();
+                break;
         }
     }
     else
